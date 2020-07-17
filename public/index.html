@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="create app using socket.io" />
+
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <title> socket-io example </title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+
+    <h1 id="idcon"> Conversa </h1>
+
+    <div id="message-container">
+        <input type="text" name="author" placeholder="Digite seu nome" />
+        <ul class="message-box">
+        </ul>
+        <form class="message-controls" id="form-chat">
+            <input type="text" placeholder="Digite sua mensagem" name="message-content" />
+            <button type="submit"> Enviar </button>
+        </form>
+
+    </div>
+    
+    <script type="text/javascript">
+        var socket = io("http://localhost:3333");
+
+        var messageBox = $(".message-box");
+        
+        socket.on("receiveMessage", function (msg){
+            var receivedMsg = '<li class="message-received"> <strong>'+ msg.author +'</strong> <p>'+ msg.message + '</p> </li>';
+            messageBox.append(receivedMsg);
+
+            console.log("Connection id: "+ msg.id);
+        });
+        
+        $('#form-chat').submit( function(event){
+            event.preventDefault();
+
+            var author = $('input[name=author]');
+            var message = $('input[name=message-content]');
+            
+            if(message.val() && author.val()) {
+                socket.emit("sendMessage", {
+                    "message": message.val(),
+                    "author": author.val()
+                });
+                var sentMsg = '<li class="message-sent"> <strong>'+ author.val() + '</strong> <p>'+ message.val() +'</p> </li>';
+                messageBox.append(sentMsg);
+                message.val("");
+            }            
+        });
+    </script>
+  </body>
+</html>
