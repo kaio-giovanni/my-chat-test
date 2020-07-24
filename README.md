@@ -3,17 +3,21 @@ Criação de um chat em tempo real com o socket.io.
 
 # Screenshots
 
+* Entrar na sala (Se não existir, cria automaticamente) <br />
 <p align="center">
-          <img src="screenshots/screenshot1" />
+          <img src="screenshots/screenshot1.png" />
 </p> 
-<hr />
+
+* Mensagem de confimação <br />
 <p align="center">
-          <img src="screenshots/screenshot2" />
+          <img src="screenshots/screenshot2.png" />
 </p> 
-<hr />
+
+* Conversa com as pessoas logadas na sala <br />
 <p align="center">
-          <img src="screenshots/screenshot3" />
+          <img src="screenshots/screenshot3.png" />
 </p> 
+
 <hr />
 
 # Exemplos de uso
@@ -44,3 +48,9 @@ Criação de um chat em tempo real com o socket.io.
 
 * `` client.broadcast.to(socketid).emit('message', 'for your eyes only'); `` </br>
   * _Enviando para um socketid individual_
+  
+## Autor
+
+| ![user](https://avatars1.githubusercontent.com/u/64810260?v=4&s=150) |
+| ----------------------------- |
+| <p align="center"> <a href="https://github.com/kaio-giovanni"> @kaio-giovanni </a> </p>|
