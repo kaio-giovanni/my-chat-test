@@ -9,14 +9,20 @@
       content="create app using socket.io" />
 
     <link rel="stylesheet" href="./style.css" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css" />
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <title> socket-io example </title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
 
-    <h1 id="idcon"> Conversa </h1>
+    <h1 id="roomName"> </h1>
 
     <div id="message-container">
         <input type="text" name="author" placeholder="Digite seu nome" />
@@ -26,37 +32,58 @@
             <input type="text" placeholder="Digite sua mensagem" name="message-content" />
             <button type="submit"> Enviar </button>
         </form>
-
     </div>
     
     <script type="text/javascript">
+
+      window.onload = function(){
+
         var socket = io("http://localhost:3333");
+
+        socket.emit("join", null);
+
+        socket.on("joined", function(args){
+          toastr.success(args+"");
+        });
+
+        var room_name;
+        do{
+          room_name = prompt("Entre em uma sala para conversar com seus amigos: ");
+        }while (room_name === null || room_name === "")
+        
+        $('#roomName').text("Sala :"+room_name);
+        socket.emit("createRoom", {
+          "room_name": room_name
+        });
 
         var messageBox = $(".message-box");
         
-        socket.on("receiveMessage", function (msg){
-            var receivedMsg = '<li class="message-received"> <strong>'+ msg.author +'</strong> <p>'+ msg.message + '</p> </li>';
+        socket.on("receivePrivateMessage", function (args){
+            var receivedMsg = '<li class="message-received"> <strong>'+ args.author +'</strong> <p>'+ args.message + '</p> </li>';
             messageBox.append(receivedMsg);
-
-            console.log("Connection id: "+ msg.id);
         });
         
-        $('#form-chat').submit( function(event){
+        $("#form-chat").submit( function(event){
             event.preventDefault();
 
             var author = $('input[name=author]');
             var message = $('input[name=message-content]');
             
             if(message.val() && author.val()) {
-                socket.emit("sendMessage", {
-                    "message": message.val(),
-                    "author": author.val()
+                socket.emit("sendMessageToRoom", {
+                  "room_name": room_name,
+                  "message": message.val(),
+                  "author": author.val()
                 });
-                var sentMsg = '<li class="message-sent"> <strong>'+ author.val() + '</strong> <p>'+ message.val() +'</p> </li>';
+                var sentMsg = '<li class="message-sent"> <strong>'+ author.val() +'</strong> <p>'+ message.val() + '</p> </li>';
                 messageBox.append(sentMsg);
-                message.val("");
-            }            
+            }
         });
+
+        socket.on("disconnected", function(args){
+          toastr.warning(""+args);
+        });
+      }
     </script>
   </body>
 </html>

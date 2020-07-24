@@ -8,9 +8,12 @@ body {
     font-size: 14px;
 }
 
-h1 {
+#roomName {
+    margin: 10px;
     text-align: center;
-    color: #c1c1c1;
+    text-decoration: none;
+    font-weight: bold;
+    color: #008080;
 }
 
 #message-container {
@@ -33,6 +36,8 @@ h1 {
     margin: 5px;
     width: 95%;
     height: 70%;
+    max-height: 70%;
+    overflow-y: scroll;
     list-style: none;
     display: block;
     align-items: center;
